@@ -13,13 +13,4 @@ UCLASS()
 class MARBLERUN_API AMarbleRunGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-
-	public:
-		virtual void BeginPlay() override;
-
-	private:
-		UFUNCTION()
-		void PrintText();
-	
-		FTimerHandle WaitToSendMessage;
 };
