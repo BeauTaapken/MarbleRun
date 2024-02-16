@@ -30,7 +30,8 @@ void AMovablePlane::SetupPlayerInputComponent()
 	}
 	InputComponent->BindAxis(FName(TEXT("RotateDown")), this, &AMovablePlane::RotateDown);
 	InputComponent->BindAxis(FName(TEXT("RotateRight")), this, &AMovablePlane::RotateRight);
-	InputComponent->BindAction(FName(TEXT("Restart")), EInputEvent::IE_Pressed, this, &AMovablePlane::LoadNextLevel);
+	InputComponent->BindAction(FName(TEXT("Restart")), IE_Released, this, &AMovablePlane::Restart);
+	InputComponent->BindAction(FName(TEXT("Exit")), IE_Released, this, &AMovablePlane::Quit);
 }
 
 void AMovablePlane::NotifyActorEndOverlap(AActor* OtherActor)
@@ -49,8 +50,6 @@ void AMovablePlane::NotifyActorEndOverlap(AActor* OtherActor)
 		}
 		GetWorldTimerManager().SetTimer(WaitForLevelLoad, this, &AMovablePlane::LoadNextLevel, TimeToWaitForLevelLoad, false);	
 	}
-
-	
 }
 
 void AMovablePlane::RotateDown(float AxisValue)
@@ -66,11 +65,15 @@ void AMovablePlane::RotateRight(float AxisValue)
 	Rotation.Roll = FMath::Clamp(Rotation.Roll + FMath::Clamp(RotationSpeed * AxisValue, -2.5f, 2.5f), -40.0f, 40.0f);
 	this->SetActorRotation(Rotation, ETeleportType::TeleportPhysics);
 }
-
 void AMovablePlane::Restart()
 {
-	// TODO atm still duplicate, if ever continuing, this code will be a bit different from the LoadNextLevel (maybe make a 'loadLevel' function that requires an int to be given?
-	UGameplayStatics::OpenLevel(GetWorld(), LevelNames[0]);
+	// TODO get name of current level
+	UGameplayStatics::OpenLevel(GetWorld(), "Level1");
+}
+
+void AMovablePlane::Quit()
+{
+	UKismetSystemLibrary::QuitGame(GetWorld(), UGameplayStatics::GetPlayerController(GetWorld(), 0), EQuitPreference::Quit, true);
 }
 
 void AMovablePlane::LoadNextLevel()

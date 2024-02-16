@@ -34,6 +34,7 @@ class MARBLERUN_API AMovablePlane : public AStaticMeshActor
 		void RotateDown(float AxisValue);
 		void RotateRight(float AxisValue);
 		void Restart();
+		void Quit();
 
 		UFUNCTION()
 		void LoadNextLevel();
